@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is a simplified package manifest for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	This script can be used to make your package do many different things.
+	The following documentation should be available on the format of this
+	file and the things you can do with it:
+		http://mods.simplemachines.org/docs/package-info.php
+
+	Please see the other included file, package-info_advanced.xml, for
+	a more detailed description of what you can do with this file.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<!-- For the id, always use something unique - put your name, a colon, and then the package name. -->
+	<id>ArcDev:SVNRepoManager</id>
+	<!-- Below should be the name of this package. -->
+	<name>ArcDev SVN Repo Manager</name>
+	<!-- The version of this modification.  Keep it numeric so PHP can tell that old < new. -->
+	<version>1.5</version>
+
+	<!-- Type, one of: modification, avatar, language. -->
+	<type>modification</type>
+
+	<!-- Installation, the key part of this file. -->
+	<install for "SMF 2.0 Beta 3.1">
+		<modification>modification.xml</modification>
+                <readme>package-readme.txt</readme>
+		<require-file name="SVNRepoManager.php" destination="$sourcedir" />
+		<require-file name="SVNRepoManager.template.php" destination="$themedir" />		
+	</install>
+
+	<!-- Don't forget something to make it uninstallable! -->
+	<uninstall>
+		<modification reverse="true">modification.xml</modification>
+		<remove-file name="$sourcedir/SVNRepoManager.php" />
+		<remove-file name="$themedir/SVNRepoManager.template.php" />
+	</uninstall>
+</package-info>

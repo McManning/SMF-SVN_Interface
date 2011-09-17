@@ -1,0 +1,68 @@
+
+110215
+	Initial creation
+	
+110216
+	svn_repoman.php
+		- Listing of repo members will now also link to their SMF accounts (if they exist)
+		- Changed all $context['user']['name'] to $context['user']['username'] since it's 
+			technically possible for SMF users to change their display name.
+		- Added smf_svn_members table to SQL and added interfaces to it. 
+		- Added routines to sync user credentials across all repositories
+
+110304
+	svn_repoman.php
+		- Implemented Add User admin controls
+		- Added automated private message when a user is added to a repo
+		- Fixed bug in GetSVNAccountPassword() 
+		- Added ForceSVNAccountCreation() to create an account with a random password when a
+			forum member is added to a repo, who does not currently have an SVN account. 
+		- Added a check to make sure repos exist before adding users
+		- Added some better error handling to various functions
+		
+110306
+	svn_repoman.php
+		- Removed references to WebSVN authentication. WebSVN now relies on SMF's user auth
+			instead of its own htpasswd/htaccess.
+		- Read only repo access is now available to those who haven't set up an SVN account
+			(but still requires SMF auth)
+	websvn-include-config.php
+		- Added SMF authentication check, using SSI.php and redirecting to login if not auth'd
+
+110307
+	- Started converting things to SMF plugin format
+	- Added package-info.xml, modification.xml, SVNRepoManager.php
+	- Cloned svn_repoman.php to SVNRepoManager.template.php, and set it to use template_main()
+		as its entry point
+
+110309
+	SVNRepoManager.template.php
+		- Moved $_REQUEST handlers to inside template_main() 
+		- Replaced global constants with SMF's $modSettings
+		- Phased out a few globals and replaced with SMF's variables
+		- Fixed $_REQUEST['action'] collision with SMF's own inbound action request
+		- Reformatted repos.ini and repaired all the post-parse_ini_file() foreach calls.
+	SVNRepoManager.php
+		- Added SMF guest check, in case they try accessing the manager as a direct action
+	modification.xml
+		- Added admin interface to set mod settings (paths and such that were previously constants)
+			NOTE: $sourcedir/ManageSettings.php operations may not be inserting properly. Double check it!
+	websvn-include-config.php
+		- Reformatted repos.ini and repaired all the post-parse_ini_file() foreach calls.
+	buildrepo.py
+		- Reformatted repos.ini
+	
+110310
+	SVNRepoManager.template.php
+		- Phased out $modSettings['svnReposList']
+	modification.xml
+		- Phased out $modSettings['svnReposList']
+		- Removed absolute path to WebSVN
+	websvn-include-config.php
+		- Removed absolute paths to various sources and replaced with relevant $modSettings items
+		
+110405
+	SVNRepoManager.template.php
+		- Fixed bug where the admin changes post would be ignored if the user changes post was empty.
+		
+		

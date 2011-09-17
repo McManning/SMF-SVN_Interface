@@ -1,0 +1,198 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+        This is an example modification file for SMF packages.
+
+        ATTENTION: If you are trying to install this manually, you should try
+        the package manager.  If it will not work for you, please take a look
+        at the following for information on this format:
+                http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+        Modification files can be used to modify files so that they do what
+        your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+        <!-- This information needs to be the same as that in the package-info.xml. -->
+        <id>ArcDev:SVNRepoManager</id>
+        <version>1.5</version>
+
+        <!-- Edit a specific file.. -->
+        <file name="$sourcedir/Subs.php">
+                <!-- A seach operation, with search rules and code to modify the file with. -->
+                <operation>
+                        <!-- Search for this text before the code we add.  You can also search for after, and the end of the file. -->
+					<search position="before"><![CDATA[
+			'help' => array(
+				'title' => $txt['help'],
+				'href' => $scripturl . '?action=help',
+				'show' => true,
+				'sub_buttons' => array(
+				),
+			),
+]]></search>
+			<!-- Add this text when we find it.  Note that it's on it's own line on purpose, and the CDATA keeps things clean. -->
+					<add><![CDATA[
+			'repoman' => array(
+				'title' => $txt['svn_repoman'],
+				'href' => $scripturl . '?action=repoman',
+				'show' => !$user_info['is_guest'],
+				'sub_buttons' => array(
+					'myaccount' => array(
+						'title' => $txt['svn_account'],
+						'href' => $scripturl . '?action=repoman',
+						'show' => true,
+					),
+					'websvn' => array(
+						'title' => $txt['svn_websvn'],
+						'href' => $modSettings['websvnUrl'],
+						'show' => true,
+						'target' => '_blank',
+						'is_last' => true,
+					),
+				),
+			),
+]]></add>
+               </operation>
+        </file>
+		
+		
+        <file name="$languagedir/index.english.php">
+                <!-- A seach operation, with search rules and code to modify the file with. -->
+                <operation>
+                        <!-- Search for this text before the code we add.  You can also search for after, and the end of the file. -->
+                    <search position="before"><![CDATA[
+$txt['home'] = 'Home';
+]]></search>
+                        <!-- Add this text when we find it.  Note that it's on it's own line on purpose, and the CDATA keeps things clean. -->
+                    <add><![CDATA[
+$txt['svn_repoman'] = 'Repo Man';
+$txt['svn_account'] = 'My Account';
+$txt['svn_websvn'] = 'WebSVN Browser';
+]]></add>
+               </operation>
+        </file>
+		
+		
+        <file name="$languagedir/Who.english.php">
+			<operation>
+				<search position="before"><![CDATA[
+$txt['who_no_online_members'] = 'There are currently no members online.';
+]]></search>
+				<add><![CDATA[
+$txt['whoall_repoman'] = 'Browsing SVN Repositories';
+]]></add>
+               </operation>
+		</file>
+		
+		
+		<file name="$boarddir/index.php">
+                <operation>
+                    <search position="before"><![CDATA[
+		'calendar' => array('Calendar.php', 'CalendarMain'),
+]]></search>
+                    <add><![CDATA[
+		'repoman' => array('SVNRepoManager.php', 'SVNRepoManager'),
+]]></add>
+               </operation>
+        </file>
+		
+		
+		<file name="$languagedir/ManageSettings.english.php">
+			<operation>
+				<search position="before"><![CDATA[
+$txt['languages_download_main_files'] = 'Primary Files';
+]]></search>
+				<add><![CDATA[
+$txt['svnRoot'] = 'Absolute path to svn repos parent directory';
+$txt['svnPublicUrl'] = 'Primary svn:// url to generate links';
+$txt['websvnUrl'] = 'URL to interfaced WebSVN';
+$txt['svnAutoJoinRepo'] = 'Repo to automatically add people to on account creation';
+
+]]></add>
+               </operation>
+		</file>
+		
+		
+		<file name="$sourcedir/ManageSettings.php">
+ 			<operation>
+ 				<search position="after"><![CDATA[
+		'layout' => 'ModifyLayoutSettings',
+]]></search>
+					<add><![CDATA[
+		'repoman' => 'ModifySVNRepoManagerSettings',
+]]></add>
+			</operation>
+            <operation>
+                <search position="before"><![CDATA[
+function ModifyLayoutSettings($return_config = false)
+]]></search>
+                        <add><![CDATA[
+		
+// SVN Repo Manager settings
+function ModifySVNRepoManagerSettings($return_config = false)
+{
+	global $txt, $scripturl, $context, $settings, $sc;
+
+	$config_vars = array(
+			// IRC Server to Use
+			array('text', 'svnRoot'),
+			array('text', 'svnPublicUrl'),
+			array('text', 'websvnUrl'),
+		'',
+			array('text', 'svnAutoJoinRepo'),
+		// This is a horiz. rule '',
+		//	array('int', 'someVar'),
+	);
+
+	if ($return_config)
+		return $config_vars;
+
+	// Saving?
+	if (isset($_GET['save']))
+	{
+		checkSession();
+
+		saveDBSettings($config_vars);
+		writeLog();
+
+		redirectexit('action=admin;area=featuresettings;sa=repoman');
+	}
+
+	$context['post_url'] = $scripturl . '?action=admin;area=featuresettings;save;sa=repoman';
+	$context['settings_title'] = $txt['SVNRepoManAdminHeadline'];
+
+	prepareDBSettingContext($config_vars);
+}
+]]></add>
+            </operation>
+        </file>
+		
+		
+		<file name="$sourcedir/Admin.php">
+            <operation>
+                <search position="after"><![CDATA[
+						'layout' => array($txt['mods_cat_layout']),
+]]></search>
+                <add><![CDATA[
+						'repoman' => array($txt['SVNRepoManAdminHeadline']),
+]]></add>
+            </operation>
+        </file>
+		
+		
+		<file name="$languagedir/Admin.english.php">
+            <operation>
+				<search position="after"><![CDATA[
+$txt['mods_cat_layout'] = 'Layout';
+]]></search>
+                <add><![CDATA[
+$txt['SVNRepoManAdminHeadline'] = 'SVN Repoman';
+]]></add>
+            </operation>
+        </file>
+		
+</modification>
