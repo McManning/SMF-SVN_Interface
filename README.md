@@ -10,7 +10,7 @@ Files
 + **buildrepo.py** - A rather lazy script
 + **svn_logs.txt** - Old log files prior to moving to Git. 
 + **websvn-include-config.php** - Custom version of config.php of [WebSVN](http://websvn.tigris.org/) to use our custom permissions.
-+ **modification.xml, package-info.xml, package-readme.txt, SVNRepoManager.php, SVNRepoManager.template.php** - Installation package for SMF (To be zipped and uploaded through the administration CP)
++ **package/** - Installation package for SMF (To be zipped and uploaded through the administration CP)
 
 Project Status
 ------------
